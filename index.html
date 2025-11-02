@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title">SMART LOGISTICS OPTIMIZATION SYSTEM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Chart.js for Data Visualization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        /* Import Calibri (if not available on system, a sans-serif fallback will be used) */
+        @import url('https://fonts.googleapis.com/css2?family=Calibri:wght@400;700&display=swap'); 
+
+        body {
+            font-family: 'Calibri', sans-serif;
+            background-color: #1a1a1a; /* Deep Charcoal Background */
+            color: #f3f4f6; /* Light text for better contrast */
+        }
+        h1, h2, h3 {
+            font-family: 'Calibri', sans-serif;
+            color: #f59e0b; /* Amber/Gold accent for warmth */
+            font-weight: 700;
+        }
+        .bg-card {
+            background-color: #2c2c2c; /* Dark Gray Card background */
+            border: 1px solid #4b4b4b;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.5), 0 0 12px rgba(245, 158, 11, 0.15); /* Subtle amber glow */
+        }
+        .input-futuristic {
+            background-color: #383838;
+            border: 1px solid #575757;
+            color: #f3f4f6;
+            outline: none;
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.375rem;
+            text-align: inherit; /* Inherit text alignment from body direction */
+        }
+        .input-futuristic:focus {
+            border-color: #f59e0b; /* Amber focus highlight */
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.5);
+        }
+        .btn-primary {
+            background-color: #ea580c; /* Vibrant Orange Primary Button */
+            color: white;
+            transition: background-color 0.2s, transform 0.1s;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .btn-primary:hover {
+            background-color: #c2410c; /* Darker Orange on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .chart-container {
+            position: relative;
+            height: 380px;
+        }
+        /* Custom progress bar styles */
+        .progress-bar-bg {
+            background-color: #4b4b4b; 
+            border-radius: 9999px;
+        }
+        /* Success color remains green for clear performance indication */
+        .progress-bar-fill {
+            background-color: #34d399; 
+            transition: width 0.5s ease-out;
+            border-radius: 9999px;
+        }
+        /* Danger color is now a strong warm orange */
+        .progress-bar-danger {
+            background-color: #f97316; /* Warm Orange/Red */
+        }
+        .text-neutral-300 { color: #d1d5db; }
+        .text-neutral-400 { color: #9ca3af; }
+        .text-neutral-500 { color: #6b7280; }
+    </style>
+</head>
+<body id="page-body">
+
+    <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <header class="mb-8">
+            
+            <!-- Language Selector is now flow content, aligned right, preventing overlap -->
+            <div class="flex justify-end mb-4 px-4 sm:px-0">
+                <select id="language-selector" class="input-futuristic text-sm py-2">
+                    <option value="en" data-i18n="lang_english">English</option>
+                    <option value="fa" data-i18n="lang_persian">Persian (فارسی)</option>
+                    <option value="ar" data-i18n="lang_arabic">Arabic (العربية)</option>
+                </select>
+            </div>
+            
+            <!-- Title Block is now centered independently -->
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold text-amber-500 mb-2 tracking-wide" data-i18n="title">SMART LOGISTICS OPTIMIZATION SYSTEM</h1>
+                <p class="text-xl text-neutral-400 font-medium" data-i18n="phase1">Phase 1: Baseline Data Foundation & KPI Reporting</p>
+            </div>
+        </header>
+
+        <!-- Project Explanation Section -->
+        <div class="bg-card p-5 rounded-xl mb-10 border-l-4 border-amber-500" id="summary-card">
+            <h2 class="text-2xl font-semibold text-amber-500 mb-3" data-i18n="summary_heading">Project Goal Summary: Data-Driven Process Optimization</h2>
+            <p class="text-neutral-300 leading-relaxed" data-i18n="summary_body">
+                This portfolio project showcases the role of a Data-Driven Project Analyst. The core objective is to reduce Average Delivery Time (ADT) and optimize courier routes by 10%. We achieve this through meticulous analysis of baseline operational data, pinpointing the root causes of delays, and strategically coordinating a technical team to develop and deploy a predictive logistics model. This interactive dashboard serves as a critical deliverable for Phase 1, clearly establishing the initial performance metrics (the "Baseline") against which all future improvements will be measured.
+            </p>
+        </div>
+        <!-- End Project Explanation Section -->
+
+        <!-- KPI Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            
+            <!-- Card 1: Average Delivery Time (ADT) -->
+            <div class="bg-card p-6 rounded-xl shadow-lg flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-semibold text-amber-500 mb-4" data-i18n="kpi1_title">Primary KPI: Average Delivery Time (ADT)</h3>
+                    <div class="flex justify-between items-end mb-4">
+                        <p class="text-6xl font-bold text-orange-500" id="adt-current-display">35.0 min</p>
+                        <div class="text-right">
+                            <p class="text-sm text-neutral-400" data-i18n="target_reduction">Baseline Target (10% Reduction):</p>
+                            <p class="text-2xl font-bold text-green-400" id="adt-target-display">31.5 min</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input and Update Control -->
+                <div class="mt-4">
+                    <div class="flex items-center space-x-3 space-x-reverse-rtl mb-3">
+                        <input type="number" id="input-adt" value="35" step="0.5" min="1" class="input-futuristic flex-grow">
+                        <span class="text-neutral-300 text-lg" data-i18n="input_unit_min">minutes</span>
+                        <button data-metric="adt" class="update-btn btn-primary" data-i18n="set_data">Set Data</button>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-2 text-align-dynamic" data-i18n="perf_desc_adt">Current performance relative to the target goal.</p>
+                    <div class="h-3 w-full progress-bar-bg rounded-full">
+                        <div id="adt-progress" class="h-full rounded-full progress-bar-fill progress-bar-danger" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Average Distance Traveled (AD) -->
+            <div class="bg-card p-6 rounded-xl shadow-lg flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-semibold text-amber-500 mb-4" data-i18n="kpi2_title">Secondary KPI: Average Distance Traveled (AD)</h3>
+                    <div class="flex justify-between items-end mb-4">
+                        <p class="text-6xl font-bold text-orange-500" id="ad-current-display">8.0 km</p>
+                        <div class="text-right">
+                            <p class="text-sm text-neutral-400" data-i18n="target_reduction">Baseline Target (10% Reduction):</p>
+                            <p class="text-2xl font-bold text-green-400" id="ad-target-display">7.2 km</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input and Update Control -->
+                <div class="mt-4">
+                    <div class="flex items-center space-x-3 space-x-reverse-rtl mb-3">
+                        <input type="number" id="input-ad" value="8.0" step="0.1" min="0.1" class="input-futuristic flex-grow">
+                        <span class="text-neutral-300 text-lg" data-i18n="input_unit_km">kilometers</span>
+                        <button data-metric="ad" class="update-btn btn-primary" data-i18n="set_data">Set Data</button>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-2 text-align-dynamic" data-i18n="perf_desc_ad">Current distance relative to the target goal.</p>
+                    <div class="h-3 w-full progress-bar-bg rounded-full">
+                        <div id="ad-progress" class="h-full rounded-full progress-bar-fill progress-bar-danger" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Visualization (Simulated Weekly Performance) -->
+        <div class="bg-card p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-semibold text-amber-400 mb-6 text-center" data-i18n="chart_heading">Simulated Weekly Performance Trend</h2>
+            <div class="chart-container">
+                <canvas id="logisticsChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Set up the Chart.js configuration globally
+        Chart.defaults.font.family = 'Calibri, sans-serif';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- CORE STATE & TARGETS ---
+            const state = {
+                adt: 35.0, // Average Delivery Time (minutes)
+                ad: 8.0,   // Average Distance Traveled (km)
+                // Simulated historical data for the chart (in minutes)
+                history: [38, 37, 36, 35.5, 35, 34.5, 35], 
+                currentLang: 'en'
+            };
+
+            const targets = {
+                // Target is a 10% reduction from the initial baseline
+                adt: state.adt * 0.9, // 31.5 minutes
+                ad: state.ad * 0.9,   // 7.2 km
+            };
+
+            let logisticsChart;
+            
+            // --- TRANSLATIONS (i18n) ---
+            const translations = {
+                en: {
+                    title: 'SMART LOGISTICS OPTIMIZATION SYSTEM',
+                    phase1: 'Phase 1: Baseline Data Foundation & KPI Reporting',
+                    summary_heading: 'Project Goal Summary: Data-Driven Process Optimization',
+                    summary_body: 'This portfolio project showcases the role of a Data-Driven Project Analyst. The core objective is to reduce Average Delivery Time (ADT) and optimize courier routes by 10%. We achieve this through meticulous analysis of baseline operational data, pinpointing the root causes of delays, and strategically coordinating a technical team to develop and deploy a predictive logistics model. This interactive dashboard serves as a critical deliverable for Phase 1, clearly establishing the initial performance metrics (the "Baseline") against which all future improvements will be measured.',
+                    kpi1_title: 'Primary KPI: Average Delivery Time (ADT)',
+                    kpi2_title: 'Secondary KPI: Average Distance Traveled (AD)',
+                    target_reduction: 'Baseline Target (10% Reduction):',
+                    input_unit_min: 'min',
+                    input_unit_km: 'km',
+                    set_data: 'Set Data',
+                    perf_desc_adt: 'Current performance relative to the target goal.',
+                    perf_desc_ad: 'Current distance relative to the target goal.',
+                    chart_heading: 'Simulated Weekly Performance Trend',
+                    chart_period: 'Reporting Period',
+                    chart_y_axis: 'Delivery Time (minutes)',
+                    chart_label_adt: 'Average Delivery Time (minutes)',
+                    chart_label_target: 'Target:',
+                    lang_english: 'English',
+                    lang_persian: 'Persian (فارسی)',
+                    lang_arabic: 'Arabic (العربية)',
+                },
+                fa: {
+                    title: 'سیستم هوشمند بهینه‌سازی لجستیک',
+                    phase1: 'فاز ۱: پایه داده و گزارش‌دهی شاخص‌ها',
+                    summary_heading: 'خلاصه هدف پروژه: بهینه‌سازی فرآیند مبتنی بر داده',
+                    summary_body: 'این پروژه نمونه کار، نقش تحلیلگر پروژه مبتنی بر داده را به نمایش می‌گذارد. هدف اصلی، کاهش میانگین زمان تحویل (ADT) و بهینه‌سازی مسیرهای پیک با ۱۰٪ است. این امر از طریق تحلیل دقیق داده‌های عملیاتی پایه، شناسایی ریشه‌ای دلایل تأخیر و هماهنگی استراتژیک تیم فنی برای توسعه و استقرار مدل لجستیک پیش‌بینی کننده محقق می‌شود. این داشبورد تعاملی به عنوان یک خروجی کلیدی برای فاز ۱ عمل می‌کند و معیارهای عملکرد اولیه ("خط مبنا") را که تمام بهبودهای آینده بر اساس آن اندازه‌گیری می‌شوند، به وضوح تثبیت می‌کند.',
+                    kpi1_title: 'شاخص اصلی: میانگین زمان تحویل (ADT)',
+                    kpi2_title: 'شاخص ثانویه: میانگین مسافت طی شده (AD)',
+                    target_reduction: 'هدف خط مبنا (کاهش ۱۰٪):',
+                    input_unit_min: 'دقیقه',
+                    input_unit_km: 'کیلومتر',
+                    set_data: 'ثبت داده',
+                    perf_desc_adt: 'عملکرد فعلی نسبت به هدف تعیین شده.',
+                    perf_desc_ad: 'مسافت فعلی نسبت به هدف تعیین شده.',
+                    chart_heading: 'روند عملکرد هفتگی شبیه‌سازی شده',
+                    chart_period: 'دوره گزارش‌دهی',
+                    chart_y_axis: 'زمان تحویل (دقیقه)',
+                    chart_label_adt: 'میانگین زمان تحویل (دقیقه)',
+                    chart_label_target: 'هدف:',
+                    lang_english: 'English',
+                    lang_persian: 'فارسی',
+                    lang_arabic: 'العربية',
+                },
+                ar: {
+                    title: 'نظام تحسين اللوجستيات الذكي',
+                    phase1: 'المرحلة 1: أساس البيانات والإبلاغ عن مؤشرات الأداء',
+                    summary_heading: 'ملخص هدف المشروع: تحسين العمليات المعتمد على البيانات',
+                    summary_body: 'يوضح هذا المشروع دور محلل المشروع المعتمد على البيانات. الهدف الأساسي هو تقليل متوسط وقت التسليم (ADT) وتحسين مسارات المندوبين بنسبة 10%. نحقق ذلك من خلال التحليل الدقيق لبيانات التشغيل الأساسية، وتحديد الأسباب الجذرية للتأخير، والتنسيق الاستراتيجي لفريق تقني لتطوير ونشر نموذج لوجستي تنبؤي. تعمل لوحة المعلومات التفاعلية هذه كمخرج حاسم للمرحلة 1، حيث تحدد بوضوح مقاييس الأداء الأولية ("خط الأساس") التي سيتم قياس جميع التحسينات المستقبلية مقابلها.',
+                    kpi1_title: 'مؤشر الأداء الرئيسي 1: متوسط وقت التسليم (ADT)',
+                    kpi2_title: 'مؤشر الأداء الرئيسي 2: متوسط المسافة المقطوعة (AD)',
+                    target_reduction: 'الهدف الأساسي (10% تقليل):',
+                    input_unit_min: 'دقيقة',
+                    input_unit_km: 'كم',
+                    set_data: 'تعيين البيانات',
+                    perf_desc_adt: 'الأداء الحالي بالنسبة للهدف المحدد.',
+                    perf_desc_ad: 'المسافة الحالية بالنسبة للهدف المحدد.',
+                    chart_heading: 'اتجاه الأداء الأسبوعي المحاكي',
+                    chart_period: 'فترة الإبلاغ',
+                    chart_y_axis: 'وقت التسليم (بالدقائق)',
+                    chart_label_adt: 'متوسط وقت التسليم (بالدقائق)',
+                    chart_label_target: 'الهدف:',
+                    lang_english: 'الإنجليزية',
+                    lang_persian: 'الفارسية',
+                    lang_arabic: 'العربية',
+                }
+            };
+
+            function calculatePerformance(current, target) {
+                const targetPercentage = (target / current) * 100;
+                return Math.min(100, targetPercentage); 
+            }
+            
+            function updateMetricUI(metric) {
+                const currentValue = state[metric];
+                const targetValue = targets[metric];
+                const perfPercentage = calculatePerformance(currentValue, targetValue);
+
+                const currentDisplay = document.getElementById(`${metric}-current-display`);
+                const targetDisplay = document.getElementById(`${metric}-target-display`);
+                const progressBar = document.getElementById(`${metric}-progress`);
+                const input = document.getElementById(`input-${metric}`);
+                
+                // Get unit from the current language
+                const unitKey = metric === 'adt' ? 'input_unit_min' : 'input_unit_km';
+                const unit = translations[state.currentLang][unitKey];
+                
+                // Update displays and input
+                currentDisplay.textContent = `${currentValue.toFixed(1)} ${unit}`;
+                targetDisplay.textContent = `${targetValue.toFixed(1)} ${unit}`;
+                input.value = currentValue;
+
+                // Update progress bar
+                progressBar.style.width = `${perfPercentage.toFixed(0)}%`;
+                
+                // Remove existing color classes
+                currentDisplay.classList.remove('text-red-400', 'text-green-400', 'text-orange-500');
+
+                // Determine color 
+                if (currentValue > targetValue) {
+                    currentDisplay.classList.add('text-orange-500');
+                    progressBar.classList.add('progress-bar-danger');
+                    progressBar.classList.remove('bg-green-500'); 
+                } else {
+                    currentDisplay.classList.add('text-green-400');
+                    progressBar.classList.remove('progress-bar-danger');
+                    progressBar.classList.add('bg-green-500'); 
+                }
+            }
+
+            // --- CHART LOGIC (Simulates trend data) ---
+
+            function initChart() {
+                const ctx = document.getElementById('logisticsChart').getContext('2d');
+                logisticsChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', translations[state.currentLang]['chart_period']],
+                        datasets: [
+                            {
+                                label: translations[state.currentLang]['chart_label_adt'],
+                                data: state.history,
+                                borderColor: '#f59e0b', 
+                                backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.3,
+                                pointBackgroundColor: '#f59e0b',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: '#f59e0b',
+                            },
+                            {
+                                label: `${translations[state.currentLang]['chart_label_target']} ${targets.adt.toFixed(1)} ${translations[state.currentLang]['input_unit_min']}`, 
+                                data: new Array(state.history.length).fill(targets.adt),
+                                borderColor: '#34d399', 
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                pointRadius: 0,
+                                fill: false,
+                                tension: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#f3f4f6', font: { family: 'Calibri' } } },
+                            tooltip: { mode: 'index', intersect: false, bodyFont: { family: 'Calibri' }, titleFont: { family: 'Calibri' } }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: translations[state.currentLang]['chart_period'], color: '#9ca3af', font: { family: 'Calibri', size: 14 } },
+                                grid: { color: 'rgba(74, 85, 104, 0.3)' },
+                                ticks: { color: '#f3f4f6', font: { family: 'Calibri' } }
+                            },
+                            y: {
+                                title: { display: true, text: translations[state.currentLang]['chart_y_axis'], color: '#9ca3af', font: { family: 'Calibri', size: 14 } },
+                                grid: { color: 'rgba(74, 85, 104, 0.3)' },
+                                ticks: { color: '#f3f4f6', font: { family: 'Calibri' } },
+                                beginAtZero: false
+                            }
+                        },
+                        // Set RTL property for the chart
+                        rtl: state.currentLang === 'fa' || state.currentLang === 'ar',
+                    }
+                });
+            }
+
+            function updateChart() {
+                // Update history with the current state value for ADT
+                state.history[state.history.length - 1] = state.adt;
+                
+                // Re-initialize chart to update labels and RTL property
+                if (logisticsChart) {
+                    logisticsChart.destroy();
+                }
+                initChart();
+            }
+
+            // --- LANGUAGE UPDATE FUNCTION ---
+            function updateLanguage(lang) {
+                state.currentLang = lang;
+                const i18nElements = document.querySelectorAll('[data-i18n]');
+                const rtl = lang === 'fa' || lang === 'ar';
+                const body = document.getElementById('page-body');
+                const summaryCard = document.getElementById('summary-card');
+
+                // 1. Set text direction
+                body.dir = rtl ? 'rtl' : 'ltr';
+                
+                // 2. Adjust RTL specific styles (Tailwind utilities)
+                if (rtl) {
+                    summaryCard.classList.remove('border-l-4');
+                    summaryCard.classList.add('border-r-4');
+                    // Add custom RTL utility to flex containers
+                    document.querySelectorAll('.space-x-3').forEach(el => el.classList.add('space-x-reverse'));
+                    document.querySelectorAll('.text-align-dynamic').forEach(el => el.classList.add('text-right'));
+                } else {
+                    summaryCard.classList.remove('border-r-4');
+                    summaryCard.classList.add('border-l-4');
+                    // Remove custom RTL utility
+                    document.querySelectorAll('.space-x-3').forEach(el => el.classList.remove('space-x-reverse'));
+                    document.querySelectorAll('.text-align-dynamic').forEach(el => el.classList.remove('text-right'));
+                }
+
+                // 3. Apply translations
+                i18nElements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (translations[lang] && translations[lang][key]) {
+                        // Special handling for the select options to preserve the script name
+                        if (el.tagName === 'OPTION') {
+                            // Only update the display text of the option
+                            el.textContent = translations[lang][key];
+                        } else {
+                            el.textContent = translations[lang][key];
+                        }
+                    }
+                });
+
+                // 4. Update dynamic metrics and chart
+                updateAllMetrics();
+            }
+            
+            function updateAllMetrics() {
+                updateMetricUI('adt');
+                updateMetricUI('ad');
+                updateChart();
+            }
+
+            // --- EVENT LISTENERS ---
+
+            document.querySelectorAll('.update-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const metric = button.dataset.metric;
+                    const input = document.getElementById(`input-${metric}`);
+                    let value = parseFloat(input.value);
+
+                    if (isNaN(value) || value < 0.1) {
+                        console.error("Please enter a valid number (greater than 0) for the metric.");
+                        return;
+                    }
+                    
+                    // Update state
+                    state[metric] = value;
+                    
+                    // Update the UI and chart
+                    updateAllMetrics();
+                });
+            });
+            
+            // Language selector change listener
+            const langSelector = document.getElementById('language-selector');
+            langSelector.addEventListener('change', (e) => {
+                updateLanguage(e.target.value);
+            });
+
+
+            // --- INITIALIZATION ---
+            // Set the default language from the selector's current value
+            state.currentLang = langSelector.value;
+            updateLanguage(state.currentLang);
+        });
+    </script>
+</body>
+</html>
